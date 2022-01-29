@@ -29,7 +29,7 @@ Route::match(['POST', 'GET'], '/echo', function (Request $request) {
 
 Route::prefix('/cashier')->group(function () {
     
-    Route::get('/',         [ CashierController::class, 'test'    ]);
+    Route::get('/',         [ CashierController::class, 'stripe'  ]);
     Route::post('/create',  [ CashierController::class, 'create'  ]);
     Route::post('/balance', [ CashierController::class, 'balance' ]);
     Route::post('/site',    [ CashierController::class, 'site'    ]);

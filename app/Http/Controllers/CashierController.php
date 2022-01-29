@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class CashierController extends Controller {
     
-    // Teste de comunicacao
-    public function test() {
+    // Envia a chave publica do stipe
+    public function stripe() {
 
-        return response([ 'CashierController communication test ok!' ]);
+        return response([ 'STRIPE_KEY' => env('STRIPE_KEY') ]);
 
     }
 
