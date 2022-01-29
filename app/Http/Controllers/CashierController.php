@@ -75,4 +75,13 @@ class CashierController extends Controller {
 
     }
 
+    public function intent(Request $request) {
+
+        $stripeCustomer = self::getStripeCustomer($request->user, $user);
+        if(!$user) return $stripeCustomer;; // stripe customer fail message
+
+        return response([ 'intent' => $user->createSetupIntent()]);
+        
+    }
+
 }

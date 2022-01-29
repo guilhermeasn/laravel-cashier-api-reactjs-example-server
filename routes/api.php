@@ -33,5 +33,6 @@ Route::prefix('/cashier')->group(function () {
     Route::post('/create',  [ CashierController::class, 'create'  ]);
     Route::post('/balance', [ CashierController::class, 'balance' ]);
     Route::post('/site',    [ CashierController::class, 'site'    ]);
+    Route::post('/intent',  [ CashierController::class, 'intent'  ]);
 
 });
