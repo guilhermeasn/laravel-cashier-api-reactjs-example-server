@@ -55,4 +55,12 @@ class User extends Authenticatable
 
     }
 
+    // Cria ou recupera um cliente stripe a partir de um usuario
+    public static function findCustomer($user_id, &$user = null) {
+
+        $user = User::find($user_id);
+        return $user ? $user->createOrGetStripeCustomer() : null;
+
+    }
+
 }
