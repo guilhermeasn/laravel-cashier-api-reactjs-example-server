@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Laravel\Cashier\Cashier;
+// use Laravel\Cashier\Cashier;
 
 class CustomerController extends Controller {
     

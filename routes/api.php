@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PaymentMethodController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,18 +28,6 @@ Route::match(['POST', 'GET'], '/echo', function(Request $request) {
 });
 
 
-// Route::prefix('/cashier')->group(function() {
-    
-//     Route::get('/',             [ CashierController::class, 'stripe'      ]);
-//     Route::post('/create',      [ CashierController::class, 'create'      ]);
-//     Route::post('/balance',     [ CashierController::class, 'balance'     ]);
-//     Route::post('/site',        [ CashierController::class, 'site'        ]);
-//     Route::post('/intent',      [ CashierController::class, 'intent'      ]);
-//     Route::post('/methods',     [ CashierController::class, 'methods'     ]);
-//     Route::post('/pay_domain',  [ CashierController::class, 'pay_domain'  ]);
-
-// });
-
 Route::prefix('/{user_id}/customer')->group(function() {
 
     Route::get('/', [ CustomerController::class, 'index' ]);  # Dados do usuario/cliente
@@ -48,6 +36,16 @@ Route::prefix('/{user_id}/customer')->group(function() {
     Route::get('/balance', [ CustomerController::class, 'balance' ]);  # Saldo e transacoes do cliente
     Route::put('/balance', [ CustomerController::class, 'balance' ]);  # Alterar saldo do cliente adicionando uma nova transacao
 
-    Route::post('/portal', [ CustomerController::class, 'portal' ]);  # URL do site stripe para o cliente
+    Route::post('/portal', [ CustomerController::class, 'portal' ]);  # Gera URL do site stripe para o cliente
+
+});
+
+Route::prefix('/{user_id}/paymentMethod')->group(function() {
+
+    Route::get('/intent', [ PaymentMethodController::class, 'intent' ]);  # Dados para a intencao de gerar novo metodo de pagamento
+
+    Route::get   ('/', [ PaymentMethodController::class, 'index' ]);  # Obtem os metodos de pagamento do cliente
+    Route::post  ('/', [ PaymentMethodController::class, 'index' ]);  # Gera um novo metodo de pagamento para o cliente intencionado
+    Route::delete('/', [ PaymentMethodController::class, 'index' ]);  # Deleta um metodo de pagamento do cliente
 
 });
