@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\SingleChargeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,7 +54,16 @@ Route::prefix('/{user_id}/paymentMethod')->group(function() {
 
 });
 
+Route::prefix('/singleCharge')->group(function() {
+
+    Route::get('/price',      [ SingleChargeController::class, 'price' ]);  # Obtem todos os produtos de pagamento unico
+    Route::get('/price/{id}', [ SingleChargeController::class, 'price' ]);  # Obtem um produto de pagamento unico especifivo
+
+});
+
 Route::prefix('/{user_id}/singleCharge')->group(function() {
+
+
 
 });
 

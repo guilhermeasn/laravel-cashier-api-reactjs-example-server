@@ -3,18 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Laravel\Cashier\Cashier;
 
 class SingleChargeController extends Controller {
     
-    // public function pay_domain(Request $request) {
+    // Obtem todos os precos pre cadastrados
+    public function price($id = null) {
 
-    //     $stripeCustomer = self::getStripeCustomer($request->user, $user);
-    //     if(!$user) return $stripeCustomer;; // stripe customer fail message
+        if($id) try {
+            
+            $price = Cashier::stripe()->prices->retrieve($id);
+            $price->product_details = Cashier::stripe()->products->retrieve($price->product);
 
-    //     // verificar method
+            return response($price);
 
-    //     return response($user->charge(4000, $request->method));
+        } catch(\Exception $error) {
 
-    // }
+            return response([
+                'message' => 'Não foi possível obter os dados do produto solicitado!',
+                'error'   => $error->getMessage()
+            ], 400);
+
+        }
+
+        return response(Cashier::stripe()->prices->all([
+            'type' => 'one_time'
+        ])->data);
+
+    }
 
 }
