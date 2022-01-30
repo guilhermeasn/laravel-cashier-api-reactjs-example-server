@@ -55,13 +55,64 @@ class SingleChargeController extends Controller {
 
     private function charge_create($user, Request $request) {
 
+        if(!$request->price) return response([
+            'message' => 'Nenhum produto ou preço informado!',
+            'error'   => 'Required parameter: price'
+        ], 400);
+
+        try {
+
+            if(is_numeric($request->price)) return response($user->charge($request->price, $request->method));
+            else return response($user->invoicePrice($request->price, $request->quantity ?: 1, [ 'default_payment_method' => $request->method ]));
+
+        } catch(\Exception $error) {
+
+            return response([
+                'message' => 'Não foi possivel realizar o pagamento!',
+                'error'   => $error->getMessage()
+            ], 400);
+
+        }
+
         return response([ 'charge create' ]);
 
     }
 
     private function charge_read($user, $id = null) {
 
-        return response([ $id ? 'charge read one' : 'charge read all' ]);
+        if($id) {
+
+            if(preg_match('/^(\w+)_(.+)$/', $id, $match)) try {
+                
+                switch($match[1]) {
+
+                    case 'in': return response($user->findInvoice($id));
+                    case 'ch': return response(Cashier::stripe()->charges->retrieve($id));
+
+                }
+
+            } catch(\Exception $error) {
+
+                return response([
+                    'message' => 'Pagamento não foi encontrado!',
+                    'error'   => $error->getMessage()
+                ], 400);
+
+            }
+
+            return response([
+                'message' => 'Identificação do pagamento desconhecido!',
+                'error'   => 'Pattern of ID charge or invoice fail'
+            ], 400);
+
+        }
+
+        return response([
+            'invoices' => $user->invoices(),
+            'charges'  => Cashier::stripe()->charges->all([
+                'customer' => $user->stripe_id
+            ])
+        ]);
 
     }
 
