@@ -11,7 +11,7 @@ use function PHPSTORM_META\map;
 class SingleChargeController extends Controller {
     
     // Obtem todos os precos pre cadastrados
-    public function price($id = null, Request $request) {
+    public function price(Request $request, $id = null) {
 
         if($id) try {
             
