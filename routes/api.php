@@ -28,6 +28,8 @@ Route::match(['POST', 'GET'], '/echo', function(Request $request) {
 });
 
 
+Route::post('/customer', [ CustomerController::class, 'customer' ]);  # Novo usuario/cliente
+
 Route::prefix('/{user_id}/customer')->group(function() {
 
     Route::get('/', [ CustomerController::class, 'index' ]);  # Dados do usuario/cliente

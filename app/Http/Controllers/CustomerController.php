@@ -4,9 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-// use Laravel\Cashier\Cashier;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Cashier\Cashier;
 
 class CustomerController extends Controller {
+
+    // Registra novo usuario
+    public function customer(Request $request) {
+
+        $validator = User::validator($request->all());
+
+        if ($validator->fails()) return response([
+            'message' => 'Não foi possível registrar o usuário!',
+            'error'   => 'Validation new user fail',
+            'errors'  => $validator->errors()
+        ], 400);
+
+        $user = new User();
+
+        $user->name     = $request->name;
+        $user->email    = $request->email;
+        $user->password = Hash::make($request->password);
+
+        $user->save();
+
+        return response($user->save() ? $user : [
+            'message' => 'Desculpe-nos! Não foi possível registrar o usuário!',
+            'error'   => 'Failed to save new user',
+        ], ($user->id) ? 200 : 500);
+
+    }
     
     // Obtem e altera dados do cliente stripe
     public function index($user_id, Request $request) {
@@ -35,7 +62,7 @@ class CustomerController extends Controller {
         }
 
         return response([
-            'user'     => $user,  # outra forma de recuperar o usuario: Cashier::findBillable($customer->id)
+            'user'     => Cashier::findBillable($customer->id),  # dados interno do usuario, igual a $user
             'customer' => $customer
         ]);
 
