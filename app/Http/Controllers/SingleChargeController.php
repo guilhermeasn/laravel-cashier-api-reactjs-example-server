@@ -6,10 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
 
+use function PHPSTORM_META\map;
+
 class SingleChargeController extends Controller {
     
     // Obtem todos os precos pre cadastrados
-    public function price($id = null) {
+    public function price($id = null, Request $request) {
 
         if($id) try {
             
@@ -27,9 +29,31 @@ class SingleChargeController extends Controller {
 
         }
 
-        return response(Cashier::stripe()->prices->all([
-            'type' => 'one_time'
-        ])->data);
+        $starting = $request->starting_price ? [
+            'starting_after' => $request->starting_price
+        ] : [];
+
+        $ending = $request->ending_price ? [
+            'ending_before' => $request->ending_price
+        ] : [];
+
+        $prices = Cashier::stripe()->prices->all([
+            'type'  => 'one_time',
+            'limit' => $request->limit ?: 30,
+            ...$starting,
+            ...$ending
+        ]);
+
+        return response([
+
+            'prices' => $prices,
+
+            'products' => Cashier::stripe()->products->all([
+                'ids'   => array_unique(array_map(fn($price) => $price->product, $prices->data)),
+                'limit' => $request->limit ?: 30
+            ])
+
+        ]);
 
     }
 
