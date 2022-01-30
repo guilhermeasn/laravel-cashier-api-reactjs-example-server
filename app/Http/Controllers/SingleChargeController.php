@@ -111,7 +111,7 @@ class SingleChargeController extends Controller {
             'invoices' => $user->invoices(),
             'charges'  => Cashier::stripe()->charges->all([
                 'customer' => $user->stripe_id
-            ])
+            ])->data
         ]);
 
     }
