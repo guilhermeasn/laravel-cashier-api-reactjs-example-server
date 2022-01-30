@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Cashier;
 
 class PaymentMethodController extends Controller {
     
@@ -47,7 +48,8 @@ class PaymentMethodController extends Controller {
 
         if($request->isMethod('delete')) try {
 
-            $user->deletePaymentMethods($method);
+            if(preg_match('/^pm_.*$/', $method)) Cashier::stripe()->paymentMethods->detach($method);
+            else $user->deletePaymentMethods($method);
 
         } catch(\Exception $error) {
 
