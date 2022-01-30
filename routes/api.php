@@ -50,3 +50,11 @@ Route::prefix('/{user_id}/paymentMethod')->group(function() {
     Route::delete('/{method}', [ PaymentMethodController::class, 'index' ]);  # Deleta um metodo de pagamento do cliente
 
 });
+
+Route::prefix('/{user_id}/singleCharge')->group(function() {
+
+});
+
+Route::prefix('/{user_id}/subscription')->group(function() {
+
+});
