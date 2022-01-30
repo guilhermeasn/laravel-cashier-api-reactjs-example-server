@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Laravel\Cashier\Cashier;
 use Illuminate\Http\Request;
+use Stripe\PaymentIntent;
 
 class CashierController extends Controller {
     
@@ -38,6 +39,7 @@ class CashierController extends Controller {
         return response([
             'userBillable'   => Cashier::findBillable($user->stripe_id),
             'stripeCustomer' => $stripeCustomer,
+            'paymentMethods' => $user->paymentMethods()
         ]);
 
     }
@@ -88,4 +90,42 @@ class CashierController extends Controller {
         
     }
 
+    public function methods(Request $request) {
+
+        $stripeCustomer = self::getStripeCustomer($request->user, $user);
+        if(!$user) return $stripeCustomer;; // stripe customer fail message
+
+        if($request->payment_method) $user->addPaymentMethod($request->payment_method);
+
+        return response([ $user->paymentMethods() ]);
+        
+    }
+
+    public function pay_domain(Request $request) {
+
+        $stripeCustomer = self::getStripeCustomer($request->user, $user);
+        if(!$user) return $stripeCustomer;; // stripe customer fail message
+
+        // verificar method
+
+        return response($user->charge(4000, $request->method));
+
+    }
+
 }
+
+// pagamento direto
+    // public function payment_intent(Request $request) {
+
+    //     return response([
+    //         'STRIPE_KEY' => env('STRIPE_KEY'),
+    //         'INTENT'     => PaymentIntent::create([
+    //             'amount'      => 4000,
+    //             'currency'    => env('CASHIER_CURRENCY'),
+    //             'description' => 'Compra de domínio!'
+    //         ], $request->idempotency ? [
+    //             'idempotency_key' => $request->idempotency
+    //         ] : null)
+    //     ]);
+        
+    // }
