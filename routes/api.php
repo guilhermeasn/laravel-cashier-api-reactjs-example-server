@@ -63,7 +63,9 @@ Route::prefix('/singleCharge')->group(function() {
 
 Route::prefix('/{user_id}/singleCharge')->group(function() {
 
-
+    Route::post('/',     [ SingleChargeController::class, 'index' ]);  # Faz um pagamento de acordo com um metodo de pagamento salvo
+    Route::get ('/',     [ SingleChargeController::class, 'index' ]);  # Obtem todos os pagamentos realizados
+    Route::get ('/{id}', [ SingleChargeController::class, 'index' ]);  # Obtem um pagamento especifico
 
 });
 
