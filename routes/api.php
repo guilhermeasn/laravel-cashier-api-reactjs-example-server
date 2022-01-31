@@ -47,10 +47,10 @@ Route::prefix('/{user_id}/paymentMethod')->group(function() {
 
     Route::get('/intent', [ PaymentMethodController::class, 'intent' ]);  # Dados para a intencao de gerar novo metodo de pagamento
 
-    Route::get   ('/',         [ PaymentMethodController::class, 'index' ]);  # Obtem todos os metodos de pagamento do cliente
-    Route::get   ('/{method}', [ PaymentMethodController::class, 'index' ]);  # Obtem um metodo de pagamento do cliente
-    Route::post  ('/',         [ PaymentMethodController::class, 'index' ]);  # Gera um novo metodo de pagamento para o cliente intencionado
-    Route::delete('/{method}', [ PaymentMethodController::class, 'index' ]);  # Deleta um metodo de pagamento do cliente
+    Route::get   ('/', [ PaymentMethodController::class, 'index' ]);  # Obtem todos os metodos de pagamento do cliente
+    Route::post  ('/', [ PaymentMethodController::class, 'index' ]);  # Gera um novo metodo de pagamento para o cliente intencionado
+    Route::put   ('/', [ PaymentMethodController::class, 'index' ]);  # Torna um metodo de pagamento como o padrao
+    Route::delete('/', [ PaymentMethodController::class, 'index' ]);  # Deleta um metodo de pagamento do cliente
 
 });
 

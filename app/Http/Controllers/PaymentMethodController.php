@@ -24,8 +24,8 @@ class PaymentMethodController extends Controller {
 
     }
 
-    // Obtem, adiciona e deleta metodos de pagamento
-    public function index($user_id, Request $request, $method = null) {
+    // Obtem, adiciona, altera e deleta metodos de pagamento
+    public function index($user_id, Request $request) {
 
         $customer = User::findCustomer($user_id, $user);
         if(!$customer) return response([
@@ -48,13 +48,26 @@ class PaymentMethodController extends Controller {
 
         if($request->isMethod('delete')) try {
 
-            if(preg_match('/^pm_.*$/', $method)) Cashier::stripe()->paymentMethods->detach($method);
-            else $user->deletePaymentMethods($method);
+            Cashier::stripe()->paymentMethods->detach($request->ID);
 
         } catch(\Exception $error) {
 
             return response([
                 'message' => 'Não foi possível remover o método de pagamento!',
+                'error'   => $error->getMessage()
+            ], 400);
+
+        }
+        
+        if($request->isMethod('put')) try {
+
+            $user->updateDefaultPaymentMethod($request->ID);
+            $user->updateDefaultPaymentMethodFromStripe();
+
+        } catch(\Exception $error) {
+
+            return response([
+                'message' => 'Não foi possível tornar este método de pagamento como o padrão!',
                 'error'   => $error->getMessage()
             ], 400);
 
