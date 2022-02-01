@@ -86,7 +86,11 @@ class SingleChargeController extends Controller {
 
         try {
 
-            if(is_numeric($request->price)) return response($user->charge($request->price, $request->method));
+            if(is_numeric($request->price))
+                return response($user->charge($request->price, $request->method, [
+                    'description' => $request->description
+                ]));
+            
             else return response($user->invoicePrice($request->price, $request->quantity ?: 1));
 
         } catch(\Exception $error) {

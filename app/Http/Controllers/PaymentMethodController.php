@@ -73,7 +73,10 @@ class PaymentMethodController extends Controller {
 
         }
 
-        return response($user->paymentMethods());
+        return response([
+            'dataset' => $user->paymentMethods(),
+            'default' => $user->updateDefaultPaymentMethodFromStripe()
+        ]);
 
     }
 
