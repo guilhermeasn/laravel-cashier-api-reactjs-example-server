@@ -22,11 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
 });
 
 
-Route::match(['POST', 'GET'], '/echo', function(Request $request) {
-    return response([
-        'echo' => $request->all()
-    ]);
-});
+Route::match(['POST', 'GET'], '/echo', fn(Request $request) => response($request->all()));  # rota de teste; retona o que foi enviado
 
 
 Route::post('/customer', [ CustomerController::class, 'customer' ]);  # Novo usuario/cliente
