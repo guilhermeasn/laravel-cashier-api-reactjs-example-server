@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Cashier;
 
 class SubscriptionController extends Controller {
@@ -19,19 +20,39 @@ class SubscriptionController extends Controller {
 
         if($request->isMethod('post')) {
 
-            $sr = $user->newSubscription(
-                $request->id, $request->id
-            )->create($request->method);
+            try {
 
-            return response($sr);
+                $user->newSubscription($request->id, $request->id)->create($request->method);
+
+            } catch(\Exception $error) {
+
+                return response([
+                    'message' => 'Não foi possivel realizar a inscrição!',
+                    'error'   => $error->getMessage()
+                ], 400);
+
+            }
 
         }
 
-        if($id) return response(Cashier::stripe()->subscriptions->retrieve($id));
-
-        return response(Cashier::stripe()->subscriptions->all([
+        $subscriptions = Cashier::stripe()->subscriptions->all([
             'customer' => $customer
-        ]));
+        ])->data;
+
+        if($id) try {
+
+            return response(array_filter($subscriptions, fn($s) => $s['id'] === $id)[1]);
+
+        } catch(\Exception $error) {
+
+            return response([
+                'message' => 'Não foi encontramos sua inscrição!',
+                'error'   => 'Subscription not found'
+            ], 400);
+
+        }
+
+        return response($subscriptions);
 
     }
 
