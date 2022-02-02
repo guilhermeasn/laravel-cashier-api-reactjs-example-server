@@ -38,6 +38,10 @@ class SubscriptionController extends Controller {
             'customer' => $customer
         ])->data;
 
+        foreach($subscriptions as &$subscription) {
+            $subscription->product = Cashier::stripe()->products->retrieve($subscription->plan->product);
+        }
+
         if($id) try {
 
             return response(array_filter($subscriptions, fn($s) => $s['id'] === $id)[1]);
