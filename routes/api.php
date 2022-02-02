@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PriceController;
 use App\Http\Controllers\SingleChargeController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,10 +52,10 @@ Route::prefix('/{user_id}/paymentMethod')->group(function() {
 
 });
 
-Route::prefix('/singleCharge')->group(function() {
+Route::prefix('/price')->group(function() {
 
-    Route::get('/price',      [ SingleChargeController::class, 'price' ]);  # Obtem todos os produtos de pagamento unico
-    Route::get('/price/{id}', [ SingleChargeController::class, 'price' ]);  # Obtem um produto de pagamento unico especifivo
+    Route::get('/',      [ PriceController::class, 'price' ]);  # Obtem todos os produtos ou assinaturas cadastrados
+    Route::get('/{id}',  [ PriceController::class, 'price' ]);  # Obtem um produto ou assinatura cadastrado
 
 });
 
@@ -66,5 +68,9 @@ Route::prefix('/{user_id}/singleCharge')->group(function() {
 });
 
 Route::prefix('/{user_id}/subscription')->group(function() {
+
+    Route::get ('/{id}', [ SubscriptionController::class, 'index' ]);  # obtem uma assinatura
+    Route::get ('/',     [ SubscriptionController::class, 'index' ]);  # obtem as assinaturas do cliente
+    Route::post('/',     [ SubscriptionController::class, 'index' ]);  # registra uma nova assinatura
 
 });
