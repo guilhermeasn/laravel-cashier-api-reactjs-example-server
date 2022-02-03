@@ -69,8 +69,9 @@ Route::prefix('/{user_id}/singleCharge')->group(function() {
 
 Route::prefix('/{user_id}/subscription')->group(function() {
 
-    Route::get ('/{id}', [ SubscriptionController::class, 'index' ]);  # obtem uma assinatura
-    Route::get ('/',     [ SubscriptionController::class, 'index' ]);  # obtem as assinaturas do cliente
-    Route::post('/',     [ SubscriptionController::class, 'index' ]);  # registra uma nova assinatura
+    Route::get   ('/{id}', [ SubscriptionController::class, 'index' ]);  # obtem uma assinatura
+    Route::get   ('/',     [ SubscriptionController::class, 'index' ]);  # obtem as assinaturas do cliente
+    Route::post  ('/',     [ SubscriptionController::class, 'index' ]);  # registra uma nova assinatura
+    Route::delete('/',     [ SubscriptionController::class, 'index' ]);  # cancela uma assinatura
 
 });

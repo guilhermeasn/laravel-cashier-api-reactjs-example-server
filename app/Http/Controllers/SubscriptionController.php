@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Error;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Cashier;
 
 class SubscriptionController extends Controller {
     
-    // Obtem e registra assinaturas
+    // Obtem, registra e cancela assinaturas
     public function index($user_id, Request $request, $id = null) {
 
         $customer = User::findCustomer($user_id, $user);
@@ -34,6 +35,26 @@ class SubscriptionController extends Controller {
 
         }
 
+        if($request->isMethod('delete')) try {
+
+            $subscriptions = Cashier::stripe()->subscriptions->all([
+                'customer' => $customer
+            ])->data;
+
+            if(empty(array_filter($subscriptions, fn($s) => $s['id'] === $request->id)[0]))
+                throw new \Exception('Subscription not found');
+            
+            Cashier::stripe()->subscriptions->cancel($request->id);
+
+        } catch(\Exception $error) {
+
+            return response([
+                'message' => 'Não foi possivel cancelar a inscrição!',
+                'error'   => $error->getMessage()
+            ], 400);
+
+        }
+
         $subscriptions = Cashier::stripe()->subscriptions->all([
             'customer' => $customer
         ])->data;
@@ -44,7 +65,7 @@ class SubscriptionController extends Controller {
 
         if($id) try {
 
-            return response(array_filter($subscriptions, fn($s) => $s['id'] === $id)[1]);
+            return response(array_filter($subscriptions, fn($s) => $s['id'] === $id)[0]);
 
         } catch(\Exception $error) {
 
